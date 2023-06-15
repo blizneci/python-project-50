@@ -1,3 +1,5 @@
+opts?=--help
+
 install:
 	poetry install
 
@@ -31,6 +33,6 @@ package-uninstall:
 	python3 -m pip uninstall hexlet-code
 
 gendiff:
-	poetry run gendiff
+	poetry run gendiff $(opts)
 
 .PHONY: gendiff install test lint selfcheck check build publish package-install
