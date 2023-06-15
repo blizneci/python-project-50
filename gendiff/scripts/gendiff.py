@@ -11,7 +11,8 @@ from gendiff import parser
 
 def main():
     print("Start gendiff")
-    parser.parse()
+    args = parser.parse()
+    print(args)
 
 
 if __name__ == '__main__':
