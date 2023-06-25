@@ -3,3 +3,6 @@
 
 #### Gendiff with plain json
 [![asciicast](https://asciinema.org/a/592726.svg)](https://asciinema.org/a/592726)
+
+#### Gendiff with nested json files
+[![asciicast](https://asciinema.org/a/N3aJFdoqBBMuU8lM5wr3ixGxr.svg)](https://asciinema.org/a/N3aJFdoqBBMuU8lM5wr3ixGxr)

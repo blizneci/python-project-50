@@ -1,0 +1,34 @@
+{
+    "string": "new_value",
+    "boolean": false,
+    "list": [
+        {
+            "group": "one",
+            "size": 10,
+            "color": "green"
+        },
+        {
+            "group": "two",
+            "size": 20,
+            "color": "red"
+        },
+        {
+            "group": "three",
+            "size": 20,
+            "color": "red"
+        }
+    ],
+    "number": 5,
+    "dict": {
+        "5": "number",
+        "None": null,
+        "True": "boolean",
+        "value": "float",
+        "nested": {
+            "boolean": true,
+            "string": "value",
+            "number": 20,
+            "None": null
+        }
+    }
+}
