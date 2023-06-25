@@ -20,16 +20,16 @@ def gen_diff(data1, data2):
     for key in all_keys:
         value1 = data1.get(key, None)
         value2 = data2.get(key, None)
-        if isinstance(value1, dict) or isinstance(value2, dict):
-            diff_data[key] = gen_diff(
-                    data1.get(key, dict()),
-                    data2.get(key, dict()),
-                    )
-            # continue
-        elif key not in data1:
+
+        if key not in data1:
             diff_data[key] = 'added'
         elif key not in data2:
             diff_data[key] = 'deleted'
+        elif isinstance(value1, dict) and isinstance(value2, dict):
+            diff_data[key] = gen_diff(
+                    data1.get(key),
+                    data2.get(key),
+                    )
         elif value1 == value2:
             diff_data[key] = 'unchanged'
         else:
