@@ -11,7 +11,6 @@ from gendiff import generate_diff
 
 
 def main():
-    print("Start gendiff")
     args = parser.parse()
     first_path = args.first_file
     second_path = args.second_file

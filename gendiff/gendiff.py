@@ -43,7 +43,7 @@ def stringify(diff, lvl=0, lvl_size=4):
 
     sorted_keys = get_keys(diff)
     indent = lvl_size * (lvl + 1)
-    
+
     def fill_cur_level(acc, key):
         node = diff[key]
         status = node['status']
@@ -69,10 +69,14 @@ def stringify(diff, lvl=0, lvl_size=4):
     cur_level = reduce(fill_cur_level, sorted_keys, list())
     indent = lvl_size * lvl + 1
 
+    """
     if isinstance(diff, list):
-        open_bracket, close_bracket  = '[]'
+        open_bracket, close_bracket = '[]'
     elif isinstance(diff, dict):
-        open_bracket, close_bracket  = '{}'
+        open_bracket, close_bracket = '{}'
+
+    """
+    open_bracket, close_bracket = '[]' if isinstance(diff, list) else '{}'
 
     result = chain(open_bracket, cur_level, [f'{close_bracket:>{indent}}'])
     return '\n'.join(result)
@@ -161,9 +165,12 @@ def to_json_format(value):
     if isinstance(value, bool):
         return str(value).lower()
     if isinstance(value, list):
-        value = ', ', join(map(to_json_format, value))
+        value = ', '.join(map(to_json_format, value))
         return f'[{value}]'
     if isinstance(value, dict):
-        value = ', '.join(map(lambda key: f'{key}: {value[key]}', sorted(value.keys())))
+        value = ', '.join(map(
+            lambda key: f'{key}: {value[key]}',
+            sorted(value.keys())
+            ))
         return '{' + value + '}'
     return value
