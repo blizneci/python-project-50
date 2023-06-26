@@ -1,0 +1,35 @@
+{
+  - boolean: true
+  + boolean: false
+    dict: {
+        5: number
+        None: null
+        True: boolean
+        nested: {
+            None: null
+            boolean: true
+          - number: 5
+          + number: 20
+            string: value
+        }
+      - value: string
+      + value: float
+    }
+    list: [
+        0: {
+          - color: red
+          + color: green
+            group: one
+            size: 10
+        }
+        1: {
+            color: red
+            group: two
+            size: 20
+        }
+      + 2: {group: three, size: 20, color: red}
+    ]
+    number: 5
+  - string: value
+  + string: new_value
+}
