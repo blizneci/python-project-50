@@ -1,5 +1,6 @@
 import json
 import os
+import yaml
 
 from itertools import chain
 from functools import reduce
@@ -29,12 +30,18 @@ def generate_diff(path1: str, path2: str) -> str:
         print('Files have to exist.')
         return
 
-    data1 = json.load(open(path1))
-    data2 = json.load(open(path2))
+    data1 = get_data_from_file(path1)
+    data2 = get_data_from_file(path2)
 
     diff = gen_diff(data1, data2)
 
     return stringify(diff)
+
+
+def get_data_from_file(path):
+    if path.endswith(('.yaml', '.yml')):
+        return yaml.safe_load(open(path, 'r'))
+    return json.load(open(path, 'r'))
 
 
 def stringify(diff, lvl=0, lvl_size=4):
