@@ -1,15 +1,26 @@
 import pytest
 
 from gendiff import generate_diff
+from termcolor import colored
 
 
-path1_plain = 'tests/fixtures/plain/file1.json'
-path2_plain = 'tests/fixtures/plain/file2.json'
-expected_plain = 'tests/fixtures/plain/expected.txt'
+PATH1_PLAIN = 'tests/fixtures/plain/file1.json'
+PATH2_PLAIN = 'tests/fixtures/plain/file2.json'
+EXPECTED_PLAIN = 'tests/fixtures/plain/expected.txt'
+
+PATH1_NESTED = 'tests/fixtures/nested/file1.json'
+PATH2_NESTED = 'tests/fixtures/nested/file2.json'
+EXPECTED_NESTED = 'tests/fixtures/nested/expected.txt'
 
 
 def test_generate_diff_plain_json():
-    expected_data = open(expected_plain).read()
-    print(expected_data)
-    print(generate_diff(path1_plain, path2_plain))
-    assert generate_diff(path1_plain, path2_plain) == expected_data
+    expected_data = open(EXPECTED_PLAIN).read()
+    diff = generate_diff(PATH1_PLAIN, PATH2_PLAIN)
+    assert diff == expected_data
+
+
+def test_generate_diff_nested_json():
+    expected_data = open(EXPECTED_NESTED).read()
+    diff = generate_diff(PATH1_NESTED, PATH2_NESTED)
+    assert diff == expected_data
+

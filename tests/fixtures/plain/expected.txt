@@ -1,8 +1,8 @@
 {
-[31m  + follow: false[0m
+  - follow: false
     host: hexlet.io
-[31m  - proxy: 123.234.53.22[0m
-[31m  - timeout: 50[0m
-[32m  + timeout: 20[0m
-[32m  + verbose: true[0m
+  - proxy: 123.234.53.22
+  - timeout: 50
+  + timeout: 20
+  + verbose: true
 }

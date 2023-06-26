@@ -27,7 +27,7 @@
             group: two
             size: 20
         }
-      + 2: {group: three, size: 20, color: red}
+      + 2: {color: red, group: three, size: 20}
     ]
     number: 5
   - string: value
