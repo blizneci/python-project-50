@@ -16,7 +16,7 @@ def main():
     args = cli.parse()
     first_file_path = args.first_file
     second_file_path = args.second_file
-    output_format = args.format
+    output_format = args.FORMAT
     first_file_data = get_data_from_file(first_file_path)
     second_file_data = get_data_from_file(second_file_path)
     diff = gen_diff(first_file_data, second_file_data)

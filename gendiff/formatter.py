@@ -14,8 +14,7 @@ STATUSES = {
 
 
 def format_output(diff, output_format='json'):
-    if output_format == 'json':
-        print(stringify(diff))
+    print(stringify(diff))
 
 
 def stringify(diff, lvl=0, lvl_size=4):
