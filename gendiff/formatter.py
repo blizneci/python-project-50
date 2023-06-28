@@ -4,7 +4,10 @@ from typing import Iterable
 
 from termcolor import colored
 
+from gendiff.model import get_sorted_keys
 
+
+INDENT_SIZE = 4
 STATUSES = {
         'added': ('+ ', 'green'),
         'deleted': ('- ', 'red'),
@@ -17,17 +20,16 @@ def format_output(diff, output_format='json'):
     print(stringify(diff))
 
 
-def stringify(diff, lvl=0, lvl_size=4):
+def stringify(diff, lvl=0):
     if not isinstance(diff, (dict, list)):
         return str(diff)
 
-    sorted_keys = get_keys(diff)
-    indent = lvl_size * (lvl + 1)
+    keys = get_sorted_keys(diff)
+    indent = INDENT_SIZE * (lvl + 1)
 
-    def fill_cur_level(acc, key):
+    def cur_lvl_str(key):
         node = diff[key]
-        status = node['status']
-        value = node['value']
+        status = get_status(node)
         if status == 'nested':
             value = stringify(value, lvl + 1)
         if status == 'changed':
@@ -40,25 +42,19 @@ def stringify(diff, lvl=0, lvl_size=4):
             line2 = colored(form_line(indent, sign2, key, value2), color2)
             acc.extend((line1, line2))
         else:
+            raw_value = get_value(node)
             value = to_json_format(value)
             sign, color = STATUSES.get(status)
             line = colored(form_line(indent, sign, key, value), color)
             acc.append(line)
         return acc
 
-    cur_level = reduce(fill_cur_level, sorted_keys, list())
+    cur_lvl_str = map(generate_string, keys)
     indent = lvl_size * lvl + 1
     open_bracket, close_bracket = '[]' if isinstance(diff, list) else '{}'
 
-    result = chain(open_bracket, cur_level, [f'{close_bracket:>{indent}}'])
+    result = chain(open_bracket, cur_lvl_str, [f'{close_bracket:>{indent}}'])
     return '\n'.join(result)
-
-
-def get_keys(diff: dict | list) -> Iterable:
-    if isinstance(diff, dict):
-        return sorted(diff.keys(), key=str)
-    if isinstance(diff, list):
-        return range(len(diff))
 
 
 def form_line(indent: int, sign: str, key: str, value: any) -> str:
