@@ -7,8 +7,9 @@ This module implements generate diff logic.
 
 from functools import reduce
 
-from gendiff.parser import parse, get_, in_, is_dicts, is_lists
-from gendiff.model import make_diff_view, make_node, get_sorted_keys
+from gendiff.parser import parse, get_, is_dicts, is_lists, is_both_nested
+from gendiff.model import make_diff_view, get_sorted_keys
+from gendiff.model import make_node, make_status
 from gendiff.formatter import stringify
 
 
@@ -28,8 +29,10 @@ def generate_diff(
     return formatted_output
 
 
-def gen_diff(data1: dict | list, data2: dict | list) -> dict | list:
+def gen_diff(data1: dict | list, data2: dict | list = None) -> dict | list:
     """Returns a diff from data1 and data2."""
+    if data2 is None:
+        data2 = data1
     if not (is_dicts(data1, data2) or is_lists(data1, data2)):
         return data1
 
@@ -39,18 +42,16 @@ def gen_diff(data1: dict | list, data2: dict | list) -> dict | list:
     def fill(diff, key):
         value1 = get_(data1, key)
         value2 = get_(data2, key)
-        if not in_(data1, key):
-            diff[key] = make_node('added', gen_diff(value2, value2))
-        elif not in_(data2, key):
-            diff[key] = make_node('deleted', gen_diff(value1, value1))
-        elif is_dicts(value1, value2) or is_lists(value1, value2):
-            diff[key] = make_node('nested', gen_diff(value1, value2))
-        elif value1 == value2:
-            diff[key] = make_node('unchanged', gen_diff(value1, value1))
+        node_status = make_status(data1, data2, key)
+        if node_status is not None:
+            value = value1 if node_status == 'deleted' else value2
+            diff[key] = make_node(node_status, gen_diff(value))
+        elif is_both_nested(value1, value2) or value1 == value2:
+            diff[key] = make_node(node_status, gen_diff(value1, value2))
         else:
             diff[key] = make_node('changed', (
-                        gen_diff(value1, value1),
-                        gen_diff(value2, value2),
+                        gen_diff(value1),
+                        gen_diff(value2),
                         ))
         return diff
 
