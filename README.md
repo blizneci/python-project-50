@@ -9,3 +9,6 @@
 
 #### Gendiff with plain yaml
 [![asciicast](https://asciinema.org/a/593418.svg)](https://asciinema.org/a/593418)
+
+### Gendiff with nested yaml files
+[![asciicast](https://asciinema.org/a/bSyiwTYi43Rh8waLOCtpdGzmN.svg)](https://asciinema.org/a/bSyiwTYi43Rh8waLOCtpdGzmN)
