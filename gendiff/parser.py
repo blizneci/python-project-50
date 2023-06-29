@@ -31,3 +31,7 @@ def is_dicts(data1: dict | list[any], data2: dict | list[any]) -> bool:
 def is_lists(data1: dict | list[any], data2: dict | list[any]) -> bool:
     """Checks if the both data are lists."""
     return isinstance(data1, list) and isinstance(data2, list)
+
+
+def is_both_nested(data1, data2):
+    return is_dicts(data1, data2) or is_lists(data1, data2)
