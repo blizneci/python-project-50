@@ -10,8 +10,7 @@ INDENT_SIZE = 4
 STATUSES = {
         'added': ('+ ', 'green'),
         'deleted': ('- ', 'red'),
-        'unchanged': ('  ', None),
-        'nested': ('  ', None),
+        None: ('  ', None),
         }
 
 
@@ -28,8 +27,8 @@ def stringify(diff, lvl=0):
 
     def generate_string(acc, key):
         node = diff[key]
-        status = node['status']
-        if status == 'changed':
+        node_status = node['status']
+        if node_status == 'changed':
             sign, color = STATUSES.get('deleted')
             deleted_value = stringify(node['deleted_value'], lvl + 1)
             deleted_line = form_line(indent, sign, key, deleted_value)
@@ -40,7 +39,7 @@ def stringify(diff, lvl=0):
             added_line = form_line(indent, sign, key, added_value)
             acc.append(colored(added_line, color))
         else:
-            sign, color = STATUSES.get(status)
+            sign, color = STATUSES.get(node_status)
             value = stringify(node['value'], lvl + 1)
             line = form_line(indent, sign, key, value)
             if color:
