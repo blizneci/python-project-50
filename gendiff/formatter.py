@@ -1,6 +1,7 @@
 from itertools import chain
 from functools import reduce
 from typing import Iterable
+from pprint import pprint
 
 from termcolor import colored
 
@@ -21,39 +22,41 @@ def format_output(diff, output_format='json'):
 
 
 def stringify(diff, lvl=0):
-    if not isinstance(diff, (dict, list)):
-        return str(diff)
+    if not (isinstance(diff, dict) or isinstance(diff, list)):
+        return to_json_format(diff)
 
     keys = get_sorted_keys(diff)
     indent = INDENT_SIZE * (lvl + 1)
 
-    def cur_lvl_str(key):
+    def generate_string(acc, key):
         node = diff[key]
-        status = get_status(node)
-        if status == 'nested':
-            value = stringify(value, lvl + 1)
+        status = node['status']
         if status == 'changed':
-            value1, value2 = value
-            value1 = to_json_format(value1)
-            value2 = to_json_format(value2)
-            sign1, color1 = STATUSES.get('deleted')
-            sign2, color2 = STATUSES.get('added')
-            line1 = colored(form_line(indent, sign1, key, value1), color1)
-            line2 = colored(form_line(indent, sign2, key, value2), color2)
-            acc.extend((line1, line2))
+            sign, color = STATUSES.get('deleted')
+            deleted_value = stringify(node['deleted_value'], lvl + 1)
+            deleted_line = form_line(indent, sign, key, deleted_value)
+            acc.append(colored(deleted_line, color, force_color=True))
+
+            sign, color = STATUSES.get('added')
+            added_value = stringify(node['added_value'], lvl + 1)
+            added_line = form_line(indent, sign, key, added_value)
+            acc.append(colored(added_line, color, force_color=True))
         else:
-            raw_value = get_value(node)
-            value = to_json_format(value)
             sign, color = STATUSES.get(status)
-            line = colored(form_line(indent, sign, key, value), color)
-            acc.append(line)
+            value = stringify(node['value'], lvl + 1)
+            line = form_line(indent, sign, key, value)
+            if color:
+                acc.append(colored(line, color, force_color=True))
+            else:
+                acc.append(line)
         return acc
 
-    cur_lvl_str = map(generate_string, keys)
-    indent = lvl_size * lvl + 1
+    cur_lvl_str = reduce(generate_string, keys, list())
+    indent = INDENT_SIZE * lvl
     open_bracket, close_bracket = '[]' if isinstance(diff, list) else '{}'
 
-    result = chain(open_bracket, cur_lvl_str, [f'{close_bracket:>{indent}}'])
+    result = chain(open_bracket, cur_lvl_str, ["".rjust(indent) + close_bracket + ' '])
+    #result = chain(open_bracket, cur_lvl_str, [f'{close_bracket:>{indent}}'])
     return '\n'.join(result)
 
 
@@ -66,13 +69,4 @@ def to_json_format(value):
         return "null"
     if isinstance(value, bool):
         return str(value).lower()
-    if isinstance(value, list):
-        value = ', '.join(map(to_json_format, value))
-        return f'[{value}]'
-    if isinstance(value, dict):
-        value = ', '.join(map(
-            lambda key: f'{key}: {value[key]}',
-            sorted(value.keys())
-            ))
-        return '{' + value + '}'
     return value

@@ -23,15 +23,8 @@ def make_node(status: str, value: any) -> dict:
     node = {'status': status}
     if isinstance(value, tuple):
         value1, value2 = value
-        node['old_value'] = value1
-        node['new_value'] = value2
+        node['deleted_value'] = value1
+        node['added_value'] = value2
     else:
         node['value'] = value
     return node
-
-
-def get_value(node):
-    if get_status(node) == 'changed':
-        return node['old_value'], node['new_value']
-    else:
-        return node['value']
