@@ -9,7 +9,7 @@ from functools import reduce
 
 from gendiff.parser import parse, get_, in_, is_dicts, is_lists
 from gendiff.model import make_diff_view, make_node, get_sorted_keys
-from gendiff.formatter import format_output, stringify
+from gendiff.formatter import stringify
 
 
 def generate_diff(
@@ -23,7 +23,6 @@ def generate_diff(
 
     diff = gen_diff(data1, data2)
 
-    #formatted_output = format_output(diff, output_format)
     formatted_output = stringify(diff)
 
     return formatted_output
@@ -52,8 +51,7 @@ def gen_diff(data1: dict | list, data2: dict | list) -> dict | list:
             diff[key] = make_node('changed', (
                         gen_diff(value1, value1),
                         gen_diff(value2, value2),
-                        ),
-                    )
+                        ))
         return diff
 
     diff = reduce(fill, keys, diff)
