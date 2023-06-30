@@ -14,11 +14,15 @@ STATUSES = {
         }
 
 
+def get_formatter(formatter_name):
+    f = {'stylish': stylish, 'plain': plain, 'json': json_}
+    return f.get(formatter_name)
+
 def format_output(diff, output_format='stylish'):
-    print(stringify(diff))
+    print(stylish(diff))
 
 
-def stringify(diff, lvl=0):
+def stylish(diff, lvl=0):
     if not (isinstance(diff, dict) or isinstance(diff, list)):
         return to_json_format(diff)
 
@@ -30,17 +34,17 @@ def stringify(diff, lvl=0):
         node_status = node['status']
         if node_status == 'changed':
             sign, color = STATUSES.get('deleted')
-            deleted_value = stringify(node['deleted_value'], lvl + 1)
+            deleted_value = stylish(node['deleted_value'], lvl + 1)
             deleted_line = form_line(indent, sign, key, deleted_value)
             acc.append(colored(deleted_line, color))
 
             sign, color = STATUSES.get('added')
-            added_value = stringify(node['added_value'], lvl + 1)
+            added_value = stylish(node['added_value'], lvl + 1)
             added_line = form_line(indent, sign, key, added_value)
             acc.append(colored(added_line, color))
         else:
             sign, color = STATUSES.get(node_status)
-            value = stringify(node['value'], lvl + 1)
+            value = stylish(node['value'], lvl + 1)
             line = form_line(indent, sign, key, value)
             if color:
                 acc.append(colored(line, color))
@@ -54,6 +58,13 @@ def stringify(diff, lvl=0):
 
     result = chain(open_bracket, cur_lvl, [close_bracket.rjust(indent + 1)])
     return '\n'.join(result)
+
+
+def plain(diff):
+    print("plain: ", __name__)
+
+def json_(diff):
+    print("json_: ", __name__)
 
 
 def form_line(indent: int, sign: str, key: str, value: any) -> str:

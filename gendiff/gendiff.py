@@ -10,7 +10,7 @@ from functools import reduce
 from gendiff.parser import parse, get_, is_dicts, is_lists, is_both_nested
 from gendiff.model import make_diff_view, get_sorted_keys
 from gendiff.model import make_node, make_status
-from gendiff.formatter import stringify
+from gendiff.formatter import stylish
 
 
 def generate_diff(
@@ -24,7 +24,7 @@ def generate_diff(
 
     diff = gen_diff(data1, data2)
 
-    formatted_output = stringify(diff)
+    formatted_output = stylish(diff)
 
     return formatted_output
 

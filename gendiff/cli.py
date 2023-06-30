@@ -9,7 +9,7 @@ def parse():
     parser.add_argument(
             '-f', '--format',
             dest='FORMAT',
-            default='plain',
+            default='stylish',
             help='set format of output')
     parser.add_argument('first_file', help='.yml | .yaml | .json file')
     parser.add_argument('second_file', help='.yml | .yaml | .json file')
