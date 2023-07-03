@@ -11,16 +11,11 @@ def gen_diff(data1, data2):
             value1 = data1.get(key)
             value2 = data2.get(key)
             if key not in data1:
-                child_node = gen_diff(value2, value2)
-                set_status('added', child_node)
-                # set_('added', node, key, value2)
+                child_node = make_added(value2)
             elif key not in data2:
-                child_node = gen_diff(value1, value1)
-                set_status('removed', child_node)
-                # set_('removed', node, key, value1)
+                child_node = make_removed(value1)
             else:
                 child_node = gen_diff(value1, value2)
-                # set_('common', node, key, gen_diff(value1, value2))
             set_child(node, key, child_node)
 
         return node
