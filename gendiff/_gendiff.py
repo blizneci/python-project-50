@@ -25,7 +25,7 @@ def gen_diff(data1, data2):
         node = make_nested()
 
         all_keys = data1.keys() | data2.keys()
-        
+
         for key in all_keys:
             value1 = data1.get(key)
             value2 = data2.get(key)

@@ -18,6 +18,7 @@ def get_formatter(formatter_name):
     f = {'stylish': stylish, 'plain': plain, 'json': json_}
     return f.get(formatter_name)
 
+
 def format_output(diff, output_format='stylish'):
     print(stylish(diff))
 
@@ -62,6 +63,7 @@ def stylish(diff, lvl=0):
 
 def plain(diff):
     print("plain: ", __name__)
+
 
 def json_(diff):
     print("json_: ", __name__)

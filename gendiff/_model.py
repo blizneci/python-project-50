@@ -34,6 +34,7 @@ def make_changed(value1, value2):
 
 def make_nested():
     children = dict()
+
     def inner(message, key=None, child_node=None):
         match message:
             case 'set_child':

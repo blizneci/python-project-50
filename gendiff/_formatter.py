@@ -2,8 +2,9 @@ from itertools import chain
 
 from termcolor import colored
 
-from gendiff._model import is_diff, is_nested, is_changed, get_value, get_children
-from gendiff._model import get_removed, get_added, get_status
+from gendiff._model import is_diff, is_changed, is_nested
+from gendiff._model import get_children, get_status
+from gendiff._model import get_added, get_removed, get_value
 
 
 INDENT_SIZE = 4
