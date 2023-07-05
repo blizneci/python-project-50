@@ -12,7 +12,24 @@ STATUSES = {
         None: ('  ', None),
         }
 
+
+def form_line(indent, status, key, value):
+    sign, color = STATUSES.get(status)
+    line = f'{sign:>{indent}}{key}: {value}'
+    if color:
+        return colored(line, color)
+    return line
+
+
 def stylish(diff):
+    def walk(node, lvl=0):
+        if isinstance(node, dict):
+            for 
+        indent = INDENT_SIZE * (lvl + 1)
+
+    if isinstance(diff, dict):
+
+def _stylish(diff):
 
     def walk(node, lvl=0):
         children = get_children(node)
@@ -64,7 +81,7 @@ def stylish(diff):
     return walk(diff, 0)
 
 
-def stringify(data, lvl):
+def _stringify(data, lvl):
     if not isinstance(data, dict):
         if data is None:
             return "null"
