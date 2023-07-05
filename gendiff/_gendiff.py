@@ -1,4 +1,23 @@
-from _model import *
+from gendiff.parser import parse
+from gendiff._model import make_added, make_removed, make_nested, set_child
+from gendiff._model import make_changed, make_unchanged
+from gendiff._formatter import stylish
+
+
+def generate_diff(
+        file_path1: str,
+        file_path2: str,
+        output_format: str = 'stylish') -> str:
+    """Returns formatted diff from data1 and data2."""
+
+    data1 = parse(file_path1)
+    data2 = parse(file_path2)
+
+    diff = gen_diff(data1, data2)
+
+    formatted_output = stylish(diff)
+
+    return formatted_output
 
 
 def gen_diff(data1, data2):
@@ -24,12 +43,3 @@ def gen_diff(data1, data2):
         return make_changed(data1, data2)
     else:
         return make_unchanged(data1)
-
-
-import os, json
-f1 = '../tests/fixtures/nested/file1.json'
-f2 = '../tests/fixtures/nested/file2.json'
-data1 = json.load(open(f1))
-data2 = json.load(open(f2))
-
-diff = gen_diff(data1, data2)
