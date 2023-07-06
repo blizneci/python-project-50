@@ -1,3 +1,11 @@
+"""
+
+This module implements diff model.
+
+"""
+
+from functools import wraps
+
 ADDED = 'added'
 REMOVED = 'removed'
 CHANGED = 'changed'
@@ -5,13 +13,27 @@ UNCHANGED = 'unchanged'
 NESTED = 'nested'
 
 
-def make_(status, value1, value2=None):
+def make_(status, value):
+    """Makes a diff node with given status and value.
+
+    Args:
+        status: A status than represents what happened with the given value.
+            Possible statuses are: 'unchanged', 'added', 'removed'.
+        value: Any type of value.
+
+    Returns:
+        A function, that returns status or value according to given message.
+        For example:
+        'get_status(node)' return status of the node.
+        'get_value(node)' returns a value of the node.
+    """
+    @wraps(make_)
     def inner(message):
         match message:
             case 'get_status':
                 return status
             case 'get_value':
-                return value1
+                return value
     return inner
 
 
@@ -28,6 +50,7 @@ def make_added(value):
 
 
 def make_changed(value1, value2):
+    @wraps(make_changed)
     def inner(message):
         match message:
             case 'get_status':
@@ -40,8 +63,10 @@ def make_changed(value1, value2):
 
 
 def make_nested():
+    """Returns diff view with empty children dict, without value."""
     children = dict()
 
+    @wraps(make_nested)
     def inner(message, key=None, child_node=None):
         match message:
             case 'set_child':
@@ -85,11 +110,13 @@ def is_changed(node):
     return get_status(node) == 'changed'
 
 
-def is_diff(data):
+def is_diff(data: any):
+    """Returns True if given data is a diff view, otherwise returns False."""
     return hasattr(data, '__call__')
 
 
 def to_dict(node):
+    """Returns diff view as a dictionary."""
     if not is_nested(node):
         if is_changed(node):
             status = get_status(node)
@@ -113,6 +140,7 @@ def to_dict(node):
 
 
 def get_node_by_key(diff, key):
+    """Returns a node in diff for given key, if key is presents in diff."""
     children = get_children(diff)
     for child in children:
         node = children.get(child)
