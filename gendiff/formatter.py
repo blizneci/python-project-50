@@ -88,4 +88,5 @@ def plain(diff):
 
 
 def json_(diff):
-    return json.dumps(diff, sort_keys=True, indent=4)
+    transformed_diff = model.to_dict(diff)
+    return json.dumps(transformed_diff, sort_keys=True, indent=4)
