@@ -1,3 +1,5 @@
+import json
+
 from functools import reduce
 from itertools import chain
 
@@ -24,60 +26,52 @@ def get_formatter(output_format):
 
 
 def stylish(diff, lvl=0):
+    if diff is None:
+        return 'null'
+    elif isinstance(diff, bool):
+        return str(diff).lower()
+    elif not (isinstance(diff, dict) or model.is_diff(diff)):
+        return diff
+
     indent = INDENT_SIZE * (lvl + 1)
 
     def walk(acc, item):
         key, node = item
-        status = model.get_status(node)
+        status = get_status(node)
         match status:
             case model.CHANGED:
-                removed_value = model.get_removed(node)
-                stringified_value = stringify(removed_value, lvl + 1)
-                line = form_line(indent, model.REMOVED, key, stringified_value)
-                acc.append(line)
+                removed = stylish(model.get_removed(node), lvl + 1)
+                removed_line = form_line(indent, model.REMOVED, key, removed)
 
-                added_value = model.get_added(node)
-                stringified_value = stringify(added_value, lvl + 1)
-                line = form_line(indent, model.ADDED, key, stringified_value)
-                acc.append(line)
-            case model.NESTED:
-                stringified_value = stylish(node, lvl + 1)
-                line = form_line(indent, status, key, stringified_value)
-                acc.append(line)
-            case _:
-                stringified_value = stringify(model.get_value(node), lvl + 1)
-                line = form_line(indent, status, key, stringified_value)
-                acc.append(line)
+                added = stylish(model.get_added(node), lvl + 1)
+                added_line = form_line(indent, model.ADDED, key, added)
+
+                acc.extend((removed_line, added_line))
+                return acc
+            case model.UNCHANGED | model.ADDED | model.REMOVED:
+                value = stylish(model.get_value(node), lvl + 1)
+            case model.NESTED | None:
+                value = stylish(node, lvl + 1)
+        line = form_line(indent, status, key, value)
+        acc.append(line)
         return acc
 
-    children = model.get_children(diff)
+    children = get_children(diff)
     cur_lvl = reduce(walk, sorted(children.items()), list())
     indent -= INDENT_SIZE
     result = chain('{', cur_lvl, ['}'.rjust(indent + 1)])
     return '\n'.join(result)
 
 
-def stringify(node, lvl=0):
-    if node is None:
-        return 'null'
-    elif isinstance(node, bool):
-        return str(node).lower()
-    elif not isinstance(node, dict):
-        return str(node)
+def get_status(node):
+    if model.is_diff(node):
+        return model.get_status(node)
 
-    indent = INDENT_SIZE * (lvl + 1)
 
-    def walk(acc, item):
-        key, value = item
-        stringified_value = stringify(value, lvl + 1)
-        line = form_line(indent, None, key, stringified_value)
-        acc.append(line)
-        return acc
-
-    cur_lvl = reduce(walk, sorted(node.items()), list())
-    indent -= INDENT_SIZE
-    result = chain('{', cur_lvl, ['}'.rjust(indent + 1)])
-    return '\n'.join(result)
+def get_children(node):
+    if model.is_diff(node):
+        return model.get_children(node)
+    return node
 
 
 def form_line(indent, status, key, value):
@@ -94,4 +88,4 @@ def plain(diff):
 
 
 def json_(diff):
-    pass
+    return json.dumps(diff, sort_keys=True, indent=4)

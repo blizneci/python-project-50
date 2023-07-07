@@ -4,10 +4,11 @@ This module implements generate diff logic.
 
 """
 
+from functools import reduce
 
 from gendiff import parser
 from gendiff import model
-from gendiff import formatter
+from gendiff.formatter import get_formatter
 
 
 def generate_diff(
@@ -21,33 +22,30 @@ def generate_diff(
 
     diff = gen_diff(data1, data2)
 
-    output_formatter = formatter.get_formatter(_format)
+    output_formatter = get_formatter(_format)
 
-    formatted_output = output_formatter(diff)
+    formatted_diff = output_formatter(diff)
 
-    return formatted_output
+    return formatted_diff
 
 
 def gen_diff(data1, data2):
-    if isinstance(data1, dict) and isinstance(data2, dict):
-        node = model.make_nested()
+    if not (isinstance(data1, dict) and isinstance(data2, dict)):
+        if data1 != data2:
+            return model.make_changed(data1, data2)
+        return model.make_unchanged(data1)
 
-        all_keys = data1.keys() | data2.keys()
-
-        for key in all_keys:
+    def walk(acc, key):
+        if key not in data1:
+            acc[key] = model.make_added(data2.get(key))
+        elif key not in data2:
+            acc[key] = model.make_removed(data1.get(key))
+        else:
             value1 = data1.get(key)
             value2 = data2.get(key)
-            if key not in data1:
-                child_node = model.make_added(value2)
-            elif key not in data2:
-                child_node = model.make_removed(value1)
-            else:
-                child_node = gen_diff(value1, value2)
-            model.set_child(node, key, child_node)
+            acc[key] = gen_diff(value1, value2)
+        return acc
 
-        return node
-
-    if data1 != data2:
-        return model.make_changed(data1, data2)
-    else:
-        return model.make_unchanged(data1)
+    all_keys = data1.keys() | data2.keys()
+    children = reduce(walk, all_keys, dict())
+    return model.make_nested(children)
