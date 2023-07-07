@@ -135,13 +135,13 @@ def to_dict(node):
     """Returns diff view as a dictionary."""
     status = get_status(node)
     match status:
-        case model.CHANGED:
+        case 'changed':
             return {
                     'status': status,
                     'removed_value': get_removed(node),
                     'added_value': get_removed(node),
                     }
-        case model.ADDED | model.REMOVED | model.UNCHANGED:
+        case 'added' | 'removed' | 'unchanged':
             return {'status': status, 'value': get_value(node)}
 
     def walk(acc, item):
@@ -150,7 +150,7 @@ def to_dict(node):
         return acc
 
     children = reduce(walk, get_children(node).items(), dict())
-    return {'status': status, 'children': children,}
+    return {'status': status, 'children': children}
 
 
 def get_nodes_by_key(diff, target_key):
