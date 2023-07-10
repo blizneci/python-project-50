@@ -7,13 +7,13 @@ PATH1_PLAIN = 'tests/fixtures/plain/file1.json'
 PATH2_PLAIN = 'tests/fixtures/plain/file2.json'
 PATH1_PLAIN_YAML = 'tests/fixtures/plain/file1.yaml'
 PATH2_PLAIN_YAML = 'tests/fixtures/plain/file2.yaml'
-EXPECTED_PLAIN_DIFF = 'tests/fixtures/plain/expected.txt'
+EXPECTED_PLAIN_DIFF = 'tests/fixtures/expected/plain.txt'
 
 PATH1_NESTED = 'tests/fixtures/nested/file1.json'
 PATH2_NESTED = 'tests/fixtures/nested/file2.json'
 PATH1_NESTED_YAML = 'tests/fixtures/nested/file1.yaml'
 PATH2_NESTED_YAML = 'tests/fixtures/nested/file2.yaml'
-EXPECTED_NESTED_DIFF = 'tests/fixtures/nested/expected.txt'
+EXPECTED_NESTED_DIFF = 'tests/fixtures/expected/nested.txt'
 
 
 @pytest.fixture
