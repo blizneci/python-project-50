@@ -8,7 +8,7 @@ from functools import reduce
 
 from gendiff import parser
 from gendiff import model
-from gendiff.formatter import get_formatter
+from gendiff.formatters import get_formatter
 
 
 def generate_diff(
@@ -22,11 +22,11 @@ def generate_diff(
 
     diff = gen_diff(data1, data2)
 
-    output_formatter = get_formatter(_format)
+    formatter = get_formatter(_format)
 
-    formatted_diff = output_formatter(diff)
+    stringified_diff = formatter.stringify(diff)
 
-    return formatted_diff
+    return stringified_diff
 
 
 def gen_diff(data1, data2):
