@@ -13,6 +13,9 @@ STATUSES = {
         model.ADDED: ('+', 'green'),
         model.REMOVED: ('-', 'red'),
         }
+ADDED_TEMPLATE = 'Property {key} was added with value: {value}'
+REMOVED_TEMPLATE = 'Property {key} was removed'
+CHANGED_TEMPLATE = 'Property {key} was updated. From {removed} to {added}'
 
 
 def get_formatter(output_format):
@@ -82,9 +85,55 @@ def form_line(indent, status, key, value):
         return colored(line, color)
     return line
 
+def _stringify(value):
+    if value is None:
+        return 'null'
+    if isinstance(value, bool):
+        return str(value).lower()
+    if isinstance(value, (dict, list)):
+        return '[complex value]'
+    return str(value)
 
-def plain(diff):
-    pass
+def stringify(value):
+    match value:
+        case None:
+            return 'null'
+        case dict(value) | list(value):
+            return '[complex value]'
+        case bool(value):
+            return str(value).lower()
+    return str(value)
+
+
+def plain(diff, key_path=None):
+    if not model.is_diff(diff):
+        return stringify(diff)
+
+    if key_path is None:
+        key_path = list()
+
+    def walk(acc, item):
+        key, node = item
+        status = get_status(node)
+        next_path = key_path + [key]
+        match status:
+            case model.ADDED | model.REMOVED:
+                value = model.get_value(node)
+                line = form_plain_line(next_path, status, value)
+                acc.append(line)
+            case model.CHANGED:
+                value = (model.get_removed(node), model.get_added(node))
+                line = form_plain_line(next_path, status, value)
+                acc.append(line)
+            case model.NESTED:
+                acc.extend(plain(node, next_path))
+        return acc
+
+    children = get_children(diff) 
+    acc = reduce(walk, sorted(children.items()), list())
+    if not key_path:
+        return '\n'.join(acc)
+    return result
 
 
 def json_(diff):
