@@ -6,17 +6,16 @@ This module implements generate diff logic.
 
 from functools import reduce
 
-from gendiff import parser
-from gendiff import model
+from gendiff import model, parser
 from gendiff.formatters import get_formatter
 
 
 def generate_diff(
-        file_path1: str,
-        file_path2: str,
-        _format: str = 'stylish') -> str:
+    file_path1: str,
+    file_path2: str,
+    _format: str = 'stylish',
+) -> str:
     """Returns formatted diff from data1 and data2."""
-
     data1 = parser.parse(file_path1)
     data2 = parser.parse(file_path2)
 
@@ -24,9 +23,7 @@ def generate_diff(
 
     formatter = get_formatter(_format)
 
-    stringified_diff = formatter.stringify(diff)
-
-    return stringified_diff
+    return formatter.stringify(diff)
 
 
 def gen_diff(data1, data2):
@@ -47,5 +44,5 @@ def gen_diff(data1, data2):
         return acc
 
     all_keys = data1.keys() | data2.keys()
-    children = reduce(walk, all_keys, dict())
+    children = reduce(walk, all_keys, {})
     return model.make_nested(children)

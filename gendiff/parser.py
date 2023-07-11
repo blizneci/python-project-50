@@ -5,14 +5,14 @@ This module implements parser for json and yaml | yml files.
 """
 
 import json
+
 import yaml
 from yaml import Loader
 from yaml.resolver import Resolver
 
-
 resolvers = Resolver.yaml_implicit_resolvers
 
-for ch in "Oo":
+for ch in 'Oo':
     if len(resolvers[ch]) == 1:
         del resolvers[ch]
     else:
