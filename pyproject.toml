@@ -1,10 +1,19 @@
 [tool.poetry]
 name = "hexlet-code"
 version = "0.1.0"
-description = ""
+description = "A calculator of differences between two configuration files"
 authors = ["Kirill Zhelvakov <blzneci.89@gmail.com>"]
 readme = "README.md"
 packages = [{include = "gendiff"}]
+repository = "https://github.com/blizneci/python-project-50"
+classifiers = [
+    "Intended Audience :: Education",
+    "Natural Language :: English",
+    "Topic :: Education",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
 
 [tool.poetry.dependencies]
 python = "^3.11"
