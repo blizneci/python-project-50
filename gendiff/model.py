@@ -124,10 +124,10 @@ def to_dict(node):
     status = get_status(node)
     if status == CHANGED:
         return {
-                'status': status,
-                'removed': get_removed(node),
-                'added': get_added(node),
-                }
+            'status': status,
+            'removed': get_removed(node),
+            'added': get_added(node),
+        }
     if status in (ADDED, REMOVED, UNCHANGED):
         return {'status': status, 'value': get_value(node)}
 

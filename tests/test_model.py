@@ -1,4 +1,3 @@
-import pytest
 from typing import Callable
 
 from gendiff import model
@@ -14,6 +13,7 @@ def test_make_():
     assert not node('get_added')
     assert not node('get_children')
 
+
 def test_make_unchanged():
     value = 'unchanged_value'
     unchanged_node = model.make_unchanged(value)
@@ -25,7 +25,7 @@ def test_make_unchanged():
     assert unchanged_node('get_value') == value
     assert model.get_value(unchanged_node) == value
 
-    
+
 def test_make_removed():
     value = 'removed_value'
     node_removed_value = model.make_removed(value)
@@ -68,10 +68,10 @@ def test_make_changed():
 
 def test_make_nested():
     children = {
-            'key1': model.make_unchanged('value1'),
-            'key2': model.make_removed('removed_value'),
-            'key3': model.make_changed('removed', 'added'),
-            }
+        'key1': model.make_unchanged('value1'),
+        'key2': model.make_removed('removed_value'),
+        'key3': model.make_changed('removed', 'added'),
+    }
     nested_node = model.make_nested(children)
     assert isinstance(nested_node, Callable)
     assert model.get_status(nested_node) == model.NESTED

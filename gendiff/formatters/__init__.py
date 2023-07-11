@@ -12,5 +12,5 @@ def get_formatter(output_format):
 
 
 all = (
-        'get_formatter',
-        )
+    'get_formatter',
+)

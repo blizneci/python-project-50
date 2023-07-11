@@ -45,19 +45,19 @@ def form_line(next_path: list[str], status: str, node: Callable) -> str:
         case model.ADDED:
             value = model.get_value(node)
             return ADDED_TEMPLATE.format(
-                    key=colored(repr(key), 'light_green'),
-                    value=colored(to_string(value), 'light_green'),
-                    )
+                key=colored(repr(key), 'light_green'),
+                value=colored(to_string(value), 'light_green'),
+            )
         case model.REMOVED:
             return REMOVED_TEMPLATE.format(key=colored(repr(key), 'light_red'))
         case model.CHANGED:
             removed = model.get_removed(node)
             added = model.get_added(node)
             line = CHANGED_TEMPLATE.format(
-                    key=key,
-                    removed=colored(to_string(removed), 'light_red'),
-                    added=colored(to_string(added), 'light_green'),
-                    )
+                key=key,
+                removed=colored(to_string(removed), 'light_red'),
+                added=colored(to_string(added), 'light_green'),
+            )
             return line
 
 
