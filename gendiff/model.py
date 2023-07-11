@@ -21,18 +21,18 @@ def make_(status, *, value=None, removed=None, added=None, children=None):
             Possible statuses are:
             'unchanged', 'added', 'removed', 'changed', 'nested'.
         value: Value of an unchanged node.
-        removed: Value of a changed node.
-        added: Value of a changed node.
+        removed: Removed value of a changed node.
+        added: Added value of a changed node.
         children: children of a nested node.
 
     Returns:
-        An object as a function, that contains status, values and children.
+        A callable object, that returns status, values and children.
         To get the status, values and children use functions below:
         'get_status(node)' returns a status of the node.
-        'get_value(node)' returns a value of unchanged node.
-        'get_removed(node)' returns a removed value.
-        'get_added(node)' returns a added value.
-        'get_children(node)' returns children of a given nested node.
+        'get_value(node)' returns a value of the node.
+        'get_removed(node)' returns a removed value of the changed node.
+        'get_added(node)' returns an added value of the changed node.
+        'get_children(node)' returns children of the given nested node.
     """
     @wraps(make_)
     def inner(message):
@@ -51,16 +51,6 @@ def make_(status, *, value=None, removed=None, added=None, children=None):
     return inner
 
 
-def make_unchanged(value):
-    """Returns a diff node with status 'unchanged'."""
-    return make_(UNCHANGED, value=value)
-
-
-def make_removed(value):
-    """Returns a diff node with status 'removed'."""
-    return make_(REMOVED, value=value)
-
-
 def make_added(value):
     """Returns a diff node with status 'added'."""
     return make_(ADDED, value=value)
@@ -76,19 +66,14 @@ def make_nested(children):
     return make_(NESTED, children=children)
 
 
-def get_children(node):
-    """Returns children of a given nested diff node."""
-    return node('get_children')
+def make_removed(value):
+    """Returns a diff node with status 'removed'."""
+    return make_(REMOVED, value=value)
 
 
-def get_value(node):
-    """Returns a value of the given diff node."""
-    return node('get_value')
-
-
-def get_removed(node):
-    """Returns removed value of the given diff node with 'changed' status."""
-    return node('get_removed')
+def make_unchanged(value):
+    """Returns a diff node with status 'unchanged'."""
+    return make_(UNCHANGED, value=value)
 
 
 def get_added(node):
@@ -96,9 +81,37 @@ def get_added(node):
     return node('get_added')
 
 
+def get_children(node):
+    """Returns children of a given nested diff node."""
+    return node('get_children')
+
+
+def get_removed(node):
+    """Returns removed value of the given diff node with 'changed' status."""
+    return node('get_removed')
+
+
 def get_status(node):
     """Returns status of the given node."""
     return node('get_status')
+
+
+def get_value(node):
+    """Returns a value of the given diff node."""
+    return node('get_value')
+
+
+def get_nodes_by_key(diff, target_key):
+    """Returns a list of nodes with target_key if it presents in diff."""
+    def walk(acc, item):
+        key, node = item
+        if key == target_key:
+            acc.append(item)
+        if get_status(node) == NESTED:
+            acc = reduce(walk, get_children(node).items(), acc)
+        return acc
+
+    return reduce(walk, get_children(diff).items(), list())
 
 
 def is_diff(data: any):
@@ -109,15 +122,14 @@ def is_diff(data: any):
 def to_dict(node):
     """Returns diff view as a dictionary."""
     status = get_status(node)
-    match status:
-        case 'changed':
-            return {
-                    'status': status,
-                    'removed': get_removed(node),
-                    'added': get_added(node),
-                    }
-        case 'added' | 'removed' | 'unchanged':
-            return {'status': status, 'value': get_value(node)}
+    if status == CHANGED:
+        return {
+                'status': status,
+                'removed': get_removed(node),
+                'added': get_added(node),
+                }
+    if status in (ADDED, REMOVED, UNCHANGED):
+        return {'status': status, 'value': get_value(node)}
 
     def walk(acc, item):
         key, value = item
@@ -126,16 +138,3 @@ def to_dict(node):
 
     children = reduce(walk, get_children(node).items(), dict())
     return {'status': status, 'children': children}
-
-
-def get_nodes_by_key(diff, target_key):
-    """Returns a list of nodes in diff by key if key presents in diff."""
-    def walk(acc, item):
-        key, node = item
-        if key == target_key:
-            acc.append(item)
-        if get_status(node) == NESTED:
-            acc = reduce(walk, get_children(node).items(), acc)
-        return acc
-
-    return reduce(walk, get_children(diff).items(), list())
