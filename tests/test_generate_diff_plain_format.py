@@ -1,50 +1,33 @@
+import os
 import pytest
 
 from gendiff import generate_diff
 
 
-PATH1_PLAIN = 'tests/fixtures/plain/file1.json'
-PATH2_PLAIN = 'tests/fixtures/plain/file2.json'
-PATH1_PLAIN_YAML = 'tests/fixtures/plain/file1.yaml'
-PATH2_PLAIN_YAML = 'tests/fixtures/plain/file2.yaml'
-EXPECTED_PLAIN_DIFF = 'tests/fixtures/expected/plain.txt'
-
-PATH1_NESTED = 'tests/fixtures/nested/file1.json'
-PATH2_NESTED = 'tests/fixtures/nested/file2.json'
-PATH1_NESTED_YAML = 'tests/fixtures/nested/file1.yaml'
-PATH2_NESTED_YAML = 'tests/fixtures/nested/file2.yaml'
-EXPECTED_NESTED_DIFF = 'tests/fixtures/expected/nested.txt'
+FORMATTED_FILE = 'plain_format.txt'
 
 
 @pytest.fixture
-def expected_plain_diff():
-    with open(EXPECTED_PLAIN_DIFF) as f:
+def expected_plain_formatted_diff(expected_plain):
+    with open(os.path.join(expected_plain, FORMATTED_FILE)) as f:
         expected_data = f.read()
     return expected_data
 
 
 @pytest.fixture
-def expected_nested_diff():
-    with open(EXPECTED_NESTED_DIFF) as f:
+def expected_nested_formatted_diff(expected_nested):
+    with open(os.path.join(expected_nested, FORMATTED_FILE)) as f:
         expected_data = f.read()
     return expected_data
 
 
-def test_generate_diff_plain_json(expected_plain_diff):
-    diff = generate_diff(PATH1_PLAIN, PATH2_PLAIN)
-    assert diff == expected_plain_diff
+def test_generate_diff_plain(plain_cases, expected_plain_formatted_diff):
+    for path1, path2 in plain_cases:
+        formatted_diff = generate_diff(path1, path2, 'plain')
+        assert formatted_diff == expected_plain_formatted_diff
 
 
-def test_generate_diff_plain_yaml(expected_plain_diff):
-    diff = generate_diff(PATH1_PLAIN_YAML, PATH2_PLAIN_YAML)
-    assert diff == expected_plain_diff
-
-
-def test_generate_diff_nested_json(expected_nested_diff):
-    diff = generate_diff(PATH1_NESTED, PATH2_NESTED)
-    assert diff == expected_nested_diff
-
-
-def test_generate_diff_nested_yaml(expected_nested_diff):
-    diff = generate_diff(PATH1_NESTED_YAML, PATH2_NESTED_YAML)
-    assert diff == expected_nested_diff
+def test_generate_diff_nested(nested_cases, expected_nested_formatted_diff):
+    for path1, path2 in nested_cases:
+        formatted_diff = generate_diff(path1, path2, 'plain')
+        assert formatted_diff == expected_nested_formatted_diff

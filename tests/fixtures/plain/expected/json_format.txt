@@ -22,5 +22,5 @@
             "value": true
         }
     },
-    "sataus": "nested"
+    "status": "nested"
 }
