@@ -1,3 +1,9 @@
+"""
+
+This module implements a stylish formatter.
+
+"""
+
 from functools import reduce
 from itertools import chain
 
@@ -59,7 +65,7 @@ def get_children(node):
 
 
 def form_line(indent, status, key, value):
-    sign, color = get_sign_color(status)
+    sign, color = get_sign_and_color(status)
     formatted_indent = f'{sign} '.rjust(indent)
     line = f'{formatted_indent}{key}: {value}'
     if color:
@@ -67,7 +73,7 @@ def form_line(indent, status, key, value):
     return line
 
 
-def get_sign_color(status):
+def get_sign_and_color(status):
     match status:
         case model.ADDED:
             return ('+', 'light_green')
