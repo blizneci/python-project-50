@@ -1,3 +1,9 @@
+"""
+
+This module implements a json formatter for diff.
+
+"""
+
 import json
 
 from gendiff import model

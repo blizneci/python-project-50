@@ -1,3 +1,9 @@
+"""
+
+This module implements plain text formatter for diff.
+
+"""
+
 from functools import reduce
 from typing import Callable
 
