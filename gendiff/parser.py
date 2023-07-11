@@ -1,3 +1,9 @@
+"""
+
+This module implements parser for json and yaml | yml files.
+
+"""
+
 import json
 import yaml
 from yaml import Loader
