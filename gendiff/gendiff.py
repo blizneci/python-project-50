@@ -13,7 +13,7 @@ from gendiff.formatters import get_formatter
 def generate_diff(
     file_path1: str,
     file_path2: str,
-    _format: str = 'stylish',
+    format_: str = 'stylish',
 ) -> str:
     """Returns formatted diff from data1 and data2."""
     data1 = parser.parse(file_path1)
@@ -21,7 +21,7 @@ def generate_diff(
 
     diff = gen_diff(data1, data2)
 
-    formatter = get_formatter(_format)
+    formatter = get_formatter(format_)
 
     return formatter.stringify(diff)
 
