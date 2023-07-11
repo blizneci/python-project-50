@@ -2,6 +2,7 @@ import argparse
 
 
 def parse():
+    """Returns arguments, parsed from command line."""
     parser = argparse.ArgumentParser(
             prog='gendiff',
             description='Compares two configuration files \
