@@ -1,13 +1,12 @@
 """
 
-This module implements parser for json and yaml | yml files.
+This module implements parser for data in json or yaml | yml formats.
 
 """
 
 import json
 
 import yaml
-from yaml import Loader
 from yaml.resolver import Resolver
 
 resolvers = Resolver.yaml_implicit_resolvers
@@ -20,8 +19,9 @@ for ch in 'Oo':
         resolvers[ch] = [x for x in resolvers[ch] if x[0] != tag]
 
 
-def parse(path: str) -> dict | list:
-    """Reads data from the file and returns it as a dictionary."""
-    if path.endswith(('.yaml', '.yml')):
-        return yaml.load(open(path, 'r'), Loader=Loader)
-    return json.load(open(path, 'r'))
+def parse(data: str, data_format: str) -> dict | list:
+    """Returns data in json or yaml format as a dictionary."""
+    if data_format == 'json':
+        return json.loads(data)
+    if data_format == 'yaml':
+        return yaml.load(data, Loader=yaml.Loader)
