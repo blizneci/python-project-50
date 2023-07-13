@@ -11,10 +11,10 @@ from gendiff import cli, generate_diff
 
 def main():
     args = cli.parse()
-    first_file_path = args.first_file
-    second_file_path = args.second_file
+    path1 = args.first_path
+    path2 = args.second_path
     format_ = args.FORMAT
-    output = generate_diff(first_file_path, second_file_path, format_)
+    output = generate_diff(path1, path2, format_)
     print(output)
 
 

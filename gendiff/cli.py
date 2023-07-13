@@ -17,7 +17,7 @@ def parse():
         default='stylish',
         help='set format of output',
     )
-    parser.add_argument('first_file', help=argparse.SUPPRESS)
-    parser.add_argument('second_file', help=argparse.SUPPRESS)
+    parser.add_argument('first_path', help=argparse.SUPPRESS)
+    parser.add_argument('second_path', help=argparse.SUPPRESS)
     parser._optionals.title = 'Options'
     return parser.parse_args()
