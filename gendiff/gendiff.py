@@ -6,18 +6,17 @@ This module implements generate diff logic.
 
 from functools import reduce
 
-from gendiff import model, parser
+from gendiff import model, fetcher, parser
 from gendiff.formatters import get_formatter
 
 
-def generate_diff(
-    file_path1: str,
-    file_path2: str,
-    format_: str = 'stylish',
-) -> str:
-    """Returns formatted diff from data1 and data2."""
-    data1 = parser.parse(file_path1)
-    data2 = parser.parse(file_path2)
+def generate_diff(path1: str, path2: str, format_: str = 'stylish') -> str:
+    """Returns formatted diff betwee data from path1 and path2."""
+    raw_data1, data_format1 = fetcher.fetch(path1)
+    raw_data2, data_format2 = fetcher.fetch(path2)
+
+    data1 = parser.parse(raw_data1, data_format1)
+    data2 = parser.parse(raw_data2, data_format2)
 
     diff = gen_diff(data1, data2)
 
