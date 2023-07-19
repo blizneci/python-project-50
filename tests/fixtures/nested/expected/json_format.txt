@@ -3,28 +3,28 @@
         "common": {
             "children": {
                 "follow": {
-                    "status": "added",
+                    "type": "added",
                     "value": false
                 },
                 "setting1": {
-                    "status": "unchanged",
+                    "type": "unchanged",
                     "value": "Value 1"
                 },
                 "setting2": {
-                    "status": "removed",
+                    "type": "removed",
                     "value": 200
                 },
                 "setting3": {
                     "added": null,
                     "removed": true,
-                    "status": "changed"
+                    "type": "changed"
                 },
                 "setting4": {
-                    "status": "added",
+                    "type": "added",
                     "value": "blah blah"
                 },
                 "setting5": {
-                    "status": "added",
+                    "type": "added",
                     "value": {
                         "key5": "value5"
                     }
@@ -36,34 +36,34 @@
                                 "wow": {
                                     "added": "so much",
                                     "removed": "",
-                                    "status": "changed"
+                                    "type": "changed"
                                 }
                             },
-                            "status": "nested"
+                            "type": "nested"
                         },
                         "key": {
-                            "status": "unchanged",
+                            "type": "unchanged",
                             "value": "value"
                         },
                         "ops": {
-                            "status": "added",
+                            "type": "added",
                             "value": "vops"
                         }
                     },
-                    "status": "nested"
+                    "type": "nested"
                 }
             },
-            "status": "nested"
+            "type": "nested"
         },
         "group1": {
             "children": {
                 "baz": {
                     "added": "bars",
                     "removed": "bas",
-                    "status": "changed"
+                    "type": "changed"
                 },
                 "foo": {
-                    "status": "unchanged",
+                    "type": "unchanged",
                     "value": "bar"
                 },
                 "nest": {
@@ -71,13 +71,13 @@
                     "removed": {
                         "key": "value"
                     },
-                    "status": "changed"
+                    "type": "changed"
                 }
             },
-            "status": "nested"
+            "type": "nested"
         },
         "group2": {
-            "status": "removed",
+            "type": "removed",
             "value": {
                 "abc": 12345,
                 "deep": {
@@ -86,7 +86,7 @@
             }
         },
         "group3": {
-            "status": "added",
+            "type": "added",
             "value": {
                 "deep": {
                     "id": {
@@ -97,5 +97,5 @@
             }
         }
     },
-    "status": "nested"
+    "type": "nested"
 }

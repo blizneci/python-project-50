@@ -23,14 +23,14 @@ def stringify(diff: Callable, path: list = None) -> list[str] | str:
     def walk(acc, item):
         key, node = item
         next_path = path + [key]
-        status = model.get_status(node)
-        match status:
+        type_ = model.get_type(node)
+        match type_:
             case model.UNCHANGED:
                 return acc
             case model.NESTED:
                 line = stringify(node, next_path)
             case _:
-                line = form_line(next_path, status, node)
+                line = form_line(next_path, type_, node)
         acc.append(line)
         return acc
 
@@ -39,9 +39,9 @@ def stringify(diff: Callable, path: list = None) -> list[str] | str:
     return '\n'.join(acc)
 
 
-def form_line(next_path: list[str], status: str, node: Callable) -> str:
+def form_line(next_path: list[str], type_: str, node: Callable) -> str:
     key = '.'.join(next_path)
-    match status:
+    match type_:
         case model.ADDED:
             value = model.get_value(node)
             return ADDED_TEMPLATE.format(

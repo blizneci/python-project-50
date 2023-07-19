@@ -1,26 +1,26 @@
 {
     "children": {
         "follow": {
-            "status": "removed",
+            "type": "removed",
             "value": false
         },
         "host": {
-            "status": "unchanged",
+            "type": "unchanged",
             "value": "hexlet.io"
         },
         "proxy": {
-            "status": "removed",
+            "type": "removed",
             "value": "123.234.53.22"
         },
         "timeout": {
             "added": 20,
             "removed": 50,
-            "status": "changed"
+            "type": "changed"
         },
         "verbose": {
-            "status": "added",
+            "type": "added",
             "value": true
         }
     },
-    "status": "nested"
+    "type": "nested"
 }

@@ -27,8 +27,8 @@ def stringify(diff, lvl=0):
 
     def walk(acc, item):
         key, node = item
-        status = get_status(node)
-        match status:
+        type_ = get_type(node)
+        match type_:
             case model.CHANGED:
                 removed = stringify(model.get_removed(node), lvl + 1)
                 removed_line = form_line(indent, model.REMOVED, key, removed)
@@ -42,7 +42,7 @@ def stringify(diff, lvl=0):
                 value = stringify(model.get_value(node), lvl + 1)
             case model.NESTED | None:
                 value = stringify(node, lvl + 1)
-        line = form_line(indent, status, key, value)
+        line = form_line(indent, type_, key, value)
         acc.append(line)
         return acc
 
@@ -53,9 +53,9 @@ def stringify(diff, lvl=0):
     return '\n'.join(result)
 
 
-def get_status(node):
+def get_type(node):
     if model.is_diff(node):
-        return model.get_status(node)
+        return model.get_type(node)
 
 
 def get_children(node):
@@ -64,8 +64,8 @@ def get_children(node):
     return node
 
 
-def form_line(indent, status, key, value):
-    sign, color = get_sign_and_color(status)
+def form_line(indent, type_, key, value):
+    sign, color = get_sign_and_color(type_)
     formatted_indent = f'{sign} '.rjust(indent)
     line = f'{formatted_indent}{key}: {value}'
     if color:
@@ -73,8 +73,8 @@ def form_line(indent, status, key, value):
     return line
 
 
-def get_sign_and_color(status):
-    match status:
+def get_sign_and_color(type_):
+    match type_:
         case model.ADDED:
             return ('+', 'light_green')
         case model.REMOVED:

@@ -13,12 +13,12 @@ UNCHANGED = 'unchanged'
 NESTED = 'nested'
 
 
-def make_(status, *, value=None, removed=None, added=None, children=None):
-    """Makes a diff node with given status and value.
+def make_(type_, *, value=None, removed=None, added=None, children=None):
+    """Makes a diff node with given type and value.
 
     Args:
-        status: A status that represents what happened with the given value.
-            Possible statuses are:
+        type: A type that represents what happened with the given value.
+            Possible types are:
             'unchanged', 'added', 'removed', 'changed', 'nested'.
         value: Value of an unchanged node.
         removed: Removed value of a changed node.
@@ -26,9 +26,9 @@ def make_(status, *, value=None, removed=None, added=None, children=None):
         children: children of a nested node.
 
     Returns:
-        A callable object, that returns status, values and children.
-        To get the status, values and children use functions below:
-        'get_status(node)' returns a status of the node.
+        A callable object, that returns type, values and children.
+        To get the type, values and children use functions below:
+        'get_type(node)' returns a type of the node.
         'get_value(node)' returns a value of the node.
         'get_removed(node)' returns a removed value of the changed node.
         'get_added(node)' returns an added value of the changed node.
@@ -36,10 +36,10 @@ def make_(status, *, value=None, removed=None, added=None, children=None):
     """
     @wraps(make_)
     def inner(message):
-        """Returns status and value."""
+        """Returns type and value."""
         match message:
-            case 'get_status':
-                return status
+            case 'get_type':
+                return type_
             case 'get_value':
                 return value
             case 'get_removed':
@@ -52,7 +52,7 @@ def make_(status, *, value=None, removed=None, added=None, children=None):
 
 
 def make_added(value):
-    """Returns a diff node with status 'added'."""
+    """Returns a diff node with type 'added'."""
     return make_(ADDED, value=value)
 
 
@@ -67,17 +67,17 @@ def make_nested(children):
 
 
 def make_removed(value):
-    """Returns a diff node with status 'removed'."""
+    """Returns a diff node with type 'removed'."""
     return make_(REMOVED, value=value)
 
 
 def make_unchanged(value):
-    """Returns a diff node with status 'unchanged'."""
+    """Returns a diff node with type 'unchanged'."""
     return make_(UNCHANGED, value=value)
 
 
 def get_added(node):
-    """Returns added value of the given diff node with 'changed' status."""
+    """Returns added value of the given diff node with 'changed' type."""
     return node('get_added')
 
 
@@ -87,13 +87,13 @@ def get_children(node):
 
 
 def get_removed(node):
-    """Returns removed value of the given diff node with 'changed' status."""
+    """Returns removed value of the given diff node with 'changed' type."""
     return node('get_removed')
 
 
-def get_status(node):
-    """Returns status of the given node."""
-    return node('get_status')
+def get_type(node):
+    """Returns type of the given node."""
+    return node('get_type')
 
 
 def get_value(node):
@@ -107,7 +107,7 @@ def get_nodes_by_key(diff, target_key):
         key, node = item
         if key == target_key:
             acc.append(item)
-        if get_status(node) == NESTED:
+        if get_type(node) == NESTED:
             acc = reduce(walk, get_children(node).items(), acc)
         return acc
 
@@ -121,15 +121,15 @@ def is_diff(data: any):
 
 def to_dict(node):
     """Returns diff view as a dictionary."""
-    status = get_status(node)
-    if status == CHANGED:
+    type_ = get_type(node)
+    if type_ == CHANGED:
         return {
-            'status': status,
+            'type': type_,
             'removed': get_removed(node),
             'added': get_added(node),
         }
-    if status in (ADDED, REMOVED, UNCHANGED):
-        return {'status': status, 'value': get_value(node)}
+    if type_ in (ADDED, REMOVED, UNCHANGED):
+        return {'type': type_, 'value': get_value(node)}
 
     def walk(acc, item):
         key, value = item
@@ -137,4 +137,4 @@ def to_dict(node):
         return acc
 
     children = reduce(walk, get_children(node).items(), dict())
-    return {'status': status, 'children': children}
+    return {'type': type_, 'children': children}
