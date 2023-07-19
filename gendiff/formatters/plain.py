@@ -16,7 +16,7 @@ REMOVED_TEMPLATE = 'Property {key} was removed'
 CHANGED_TEMPLATE = 'Property {key!r} was updated. From {removed} to {added}'
 
 
-def stringify(diff: Callable, path: list = None) -> list[str] | str:
+def stringify(diff: Callable, path: list = None) -> str:
     if path is None:
         path = list()
 
