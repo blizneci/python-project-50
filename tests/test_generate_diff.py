@@ -1,30 +1,33 @@
 import os
-from itertools import cycle, repeat, chain
+from itertools import chain, cycle, product, repeat
 
 import pytest
 
 from gendiff import generate_diff
 
 
-FIXTURES_PATHS = ('tests/fixtures/plain', 'tests/fixtures/nested')
-EXPECTED_FILES = ('plain_format.txt', 'stylish_format.txt', 'json_format.txt')
-FORMATS = ('plain', 'stylish', 'json')
+EXPECTED_FILES = (
+    'expected/plain_format.txt',
+    'expected/stylish_format.txt',
+    'expected/json_format.txt',
+)
 FIRST_FILE_NAMES = ('file1.json', 'file1.yaml')
+FIXTURES_PATHS = ('tests/fixtures/plain', 'tests/fixtures/nested')
+FORMATS = ('plain', 'stylish', 'json')
 SECOND_FILE_NAMES = ('file2.json', 'file2.yml')
 
 
-def get_path(files):
-    for fixture_path in FIXTURES_PATHS:
-        for file_name in files:
-            path = os.path.join(fixture_path, file_name)
-            yield from repeat(path, 3)
+def get_paths(files):
+    path_parts = product(FIXTURES_PATHS, files)
+    paths = map(lambda parts: os.path.join(*parts), path_parts)
+    for path in paths:
+        yield from repeat(path, 3)
 
 
-def get_expected():
-    for fixture_path in FIXTURES_PATHS:
-        for file_name in chain(*repeat(EXPECTED_FILES, 2)):
-            path = os.path.join(fixture_path, 'expected', file_name)
-            yield path
+def get_expected_paths():
+    path_parts = product(FIXTURES_PATHS, chain(*repeat(EXPECTED_FILES, 2)))
+    paths = map(lambda parts: os.path.join(*parts), path_parts)
+    yield from paths
 
 
 def idfn(val):
@@ -42,10 +45,10 @@ def idfn(val):
 @pytest.mark.parametrize(
     'path1, path2, format_, expected',
     list(zip(
-        get_path(FIRST_FILE_NAMES),
-        get_path(SECOND_FILE_NAMES),
+        get_paths(FIRST_FILE_NAMES),
+        get_paths(SECOND_FILE_NAMES),
         cycle(FORMATS),
-        get_expected(),
+        get_expected_paths(),
     )),
     ids=idfn,
 )
